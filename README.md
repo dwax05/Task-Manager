@@ -1,2 +1,2 @@
 # Task-Manager
-Task manager in c++.
+Task manager in c
