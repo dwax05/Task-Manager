@@ -27,9 +27,9 @@ void ui(Task* tasks, int* taskCount) {
     while (loop) {
         fputs("tskmngr> ", stdout);
         fgets(response, CHARSIZE, stdin);
+
         // Remove newline character from the response
         response[strcspn(response, "\n")] = '\0';
-
         // Convert the response to lowercase
         for (int i = 0; response[i]; i++) {
             response[i] = tolower(response[i]);
