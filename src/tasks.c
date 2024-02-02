@@ -4,6 +4,23 @@
 #include <string.h>
 #include <ctype.h>
 
+void setConsoleColor(TaskStatus status) {
+    switch (status) {
+    case TODO:
+        printf("\033[1;31m"); // Red
+        break;
+    case WIP:
+        printf("\033[1;33m"); // Yellow
+        break;
+    case DONE:
+        printf("\033[1;32m"); // Green
+        break;
+    default:
+        printf("\033[0m"); // Reset color
+        break;
+    }
+}
+
 void ui(Task* tasks, int* taskCount) {
     bool loop = true;
     char response[CHARSIZE];
@@ -136,10 +153,12 @@ void loadTasksFromFile(Task* tasks, int* taskCount, const char* filename) {
     }
 }
 
+
 void listTasks(Task* tasks, int taskCount, TaskStatus filter) {
     fputs("Task list:\n", stdout);
     for (int i = 0; i < taskCount; i++) {
         if (filter == -1 || tasks[i].status == filter) {
+            setConsoleColor(tasks[i].status);
             const char* statusStr;
             switch (tasks[i].status) {
             case TODO:
@@ -158,7 +177,7 @@ void listTasks(Task* tasks, int taskCount, TaskStatus filter) {
             fputs(statusStr, stdout);
             fputs(" ", stdout);
             fputs(tasks[i].name, stdout);
-            fputs("\n", stdout);
+            fputs("\033[0m\n", stdout); // Reset color
         }
     }
 }
