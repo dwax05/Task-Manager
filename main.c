@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 #define CHARSIZE 200
 #define MAX_TASKS 100
@@ -48,6 +49,11 @@ void ui(Task* tasks, int* taskCount)
     fgets(response, CHARSIZE, stdin);
     // Remove newline character from the response
     response[strcspn(response, "\n")] = '\0';
+
+    // Convert the response to lowercase
+    for (int i = 0; response[i]; i++) {
+      response[i] = tolower(response[i]);
+    }
 
     if (strcmp(response, "exit") == 0) {
       loop = false;
@@ -99,7 +105,7 @@ void processResponse(Task* tasks, int* taskCount, char* response)
       } else {
         fputs("Invalid format. Usage: done <Task>\n", stdout);
       }
-    } else if (strcmp(command, "WIP") == 0) {
+    } else if (strcmp(command, "wip") == 0) {
       if (taskName != NULL) {
         for (int i = 0; i < *taskCount; i++) {
           if (strcmp(tasks[i].name, taskName) == 0) {
@@ -155,9 +161,18 @@ void loadTasksFromFile(Task* tasks, int* taskCount, const char* filename)
 
 void listTodos(Task* tasks, int taskCount)
 {
-  fputs("TODO tasks:\n", stdout);
+  fputs("Task list:\n", stdout);
   for (int i = 0; i < taskCount; i++) {
     if (tasks[i].status == TODO) {
+      fputs("TODO ", stdout);
+      fputs(tasks[i].name, stdout);
+      fputs("\n", stdout);
+    } else if (tasks[i].status == WIP) {
+      fputs("WIP  ", stdout);
+      fputs(tasks[i].name, stdout);
+      fputs("\n", stdout);
+    } else if (tasks[i].status == DONE) {
+      fputs("DONE ", stdout);
       fputs(tasks[i].name, stdout);
       fputs("\n", stdout);
     }
