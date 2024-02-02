@@ -21,6 +21,7 @@ void ui(Task* tasks, int* taskCount);
 void processResponse(Task* tasks, int* taskCount, char*);
 void saveTasksToFile(Task* tasks, int taskCount, const char* filename);
 void loadTasksFromFile(Task* tasks, int* taskCount, const char* filename);
+void listTodos(Task* tasks, int taskCount);
 
 int main(void)
 {
@@ -50,6 +51,8 @@ void ui(Task* tasks, int* taskCount)
 
     if (strcmp(response, "exit") == 0) {
       loop = false;
+    } else if (strcmp(response, "list") == 0) {
+      listTodos(tasks, *taskCount);
     } else {
       processResponse(tasks, taskCount, response);
     }
@@ -147,5 +150,16 @@ void loadTasksFromFile(Task* tasks, int* taskCount, const char* filename)
     fputs("Tasks loaded from file.\n", stdout);
   } else {
     fputs("File not found. Starting with an empty task list.\n", stdout);
+  }
+}
+
+void listTodos(Task* tasks, int taskCount)
+{
+  fputs("TODO tasks:\n", stdout);
+  for (int i = 0; i < taskCount; i++) {
+    if (tasks[i].status == TODO) {
+      fputs(tasks[i].name, stdout);
+      fputs("\n", stdout);
+    }
   }
 }
