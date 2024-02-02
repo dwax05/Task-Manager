@@ -20,8 +20,24 @@ void ui(Task* tasks, int* taskCount) {
 
         if (strcmp(response, "exit") == 0) {
             loop = false;
-        } else if (strcmp(response, "list") == 0) {
-            listTodos(tasks, *taskCount);
+        } else if (strncmp(response, "list", 4) == 0) {
+            char* argument = strtok(response + 4, " ");
+            TaskStatus filter;
+            if (argument != NULL) {
+                if (strcmp(argument, "done") == 0) {
+                    filter = DONE;
+                } else if (strcmp(argument, "wip") == 0) {
+                    filter = WIP;
+                } else if (strcmp(argument, "todo") == 0) {
+                    filter = TODO;
+                } else {
+                    fputs("Invalid list argument. Usage: list [done/wip/todo]\n", stdout);
+                    continue;
+                }
+            } else {
+                filter = -1;  // Default to listing all tasks
+            }
+            listTasks(tasks, *taskCount, filter);
         } else {
             processResponse(tasks, taskCount, response);
         }
@@ -120,19 +136,27 @@ void loadTasksFromFile(Task* tasks, int* taskCount, const char* filename) {
     }
 }
 
-void listTodos(Task* tasks, int taskCount) {
+void listTasks(Task* tasks, int taskCount, TaskStatus filter) {
     fputs("Task list:\n", stdout);
     for (int i = 0; i < taskCount; i++) {
-        if (tasks[i].status == TODO) {
-            fputs("TODO ", stdout);
-            fputs(tasks[i].name, stdout);
-            fputs("\n", stdout);
-        } else if (tasks[i].status == WIP) {
-            fputs("WIP  ", stdout);
-            fputs(tasks[i].name, stdout);
-            fputs("\n", stdout);
-        } else if (tasks[i].status == DONE) {
-            fputs("DONE ", stdout);
+        if (filter == -1 || tasks[i].status == filter) {
+            const char* statusStr;
+            switch (tasks[i].status) {
+            case TODO:
+                statusStr = "TODO";
+                break;
+            case WIP:
+                statusStr = "WIP ";
+                break;
+            case DONE:
+                statusStr = "DONE";
+                break;
+            default:
+                statusStr = "Unknown";
+                break;
+            }
+            fputs(statusStr, stdout);
+            fputs(" ", stdout);
             fputs(tasks[i].name, stdout);
             fputs("\n", stdout);
         }

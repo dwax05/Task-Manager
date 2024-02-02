@@ -1,19 +1,33 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -std=c99
+CFLAGS = -Wall -Wextra -std=c11
+SRC_DIR = src
+OUT_DIR = out
+BIN_DIR = $(OUT_DIR)/bin
 
-SRC = main.c tasks.c
-OBJ = $(SRC:.c=.o)
-EXECUTABLE = tskmngr
+# List of source files
+SRCS = $(wildcard $(SRC_DIR)/*.c)
 
-.PHONY: all clean
+# Generate object file names
+OBJS = $(patsubst $(SRC_DIR)/%.c, $(OUT_DIR)/%.o, $(SRCS))
 
-all: $(EXECUTABLE)
+# Main executable name
+EXE = $(BIN_DIR)/tskmngr
 
-$(EXECUTABLE): $(OBJ)
-	$(CC) $(CFLAGS) -o $@ $^
+all: $(EXE)
 
-%.o: %.c
-	$(CC) $(CFLAGS) -c -o $@ $<
+$(EXE): $(OBJS) | $(BIN_DIR)
+	$(CC) $(CFLAGS) $(OBJS) -o $@
+
+$(OUT_DIR)/%.o: $(SRC_DIR)/%.c | $(OUT_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(OUT_DIR):
+	mkdir -p $(OUT_DIR)
+
+$(BIN_DIR):
+	mkdir -p $(BIN_DIR)
 
 clean:
-	rm -f $(EXECUTABLE) $(OBJ)
+	rm -rf $(OUT_DIR)
+
+.PHONY: all clean

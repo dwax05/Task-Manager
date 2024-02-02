@@ -21,6 +21,6 @@ void ui(Task* tasks, int* taskCount);
 void processResponse(Task* tasks, int* taskCount, char*);
 void saveTasksToFile(Task* tasks, int taskCount, const char* filename);
 void loadTasksFromFile(Task* tasks, int* taskCount, const char* filename);
-void listTodos(Task* tasks, int taskCount);
+void listTasks(Task* tasks, int taskCount, TaskStatus filter);
 
 #endif // TASKS_H
