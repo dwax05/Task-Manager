@@ -8,7 +8,7 @@ If i wanted to add a task to my todo list i would type:
 `add "task"`
 
 When working on a task you can change its status to WIP by typing:
-`wip "task"'`
+`wip "task"`
 
 When a task is completed you can type:
 `done "task"`
